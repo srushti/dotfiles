@@ -38,7 +38,6 @@ DISABLE_AUTO_TITLE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(git rbenv ruby gem rails brew bundler)
 
-
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
 #DISABLE_AUTO_UPDATE="true" # will disable auto updates entirely
 
@@ -78,10 +77,10 @@ alias ll="ls -l"
 if which brew &> /dev/null; then
   alias i="brew install"
   alias up="brew upgrade"
-else if which apt-get &> /dev/null; then
-    alias i="sudo apt-get install"
-    alias up="sudo apt-get upgrade"
-  fi fi
+elif which apt-get &> /dev/null; then
+  alias i="sudo apt-get install"
+  alias up="sudo apt-get upgrade"
+fi
 alias gi="gem install"
 alias ctags="/usr/local/Cellar/ctags/5.8/bin/ctags"
 alias refreshctags="ctags -f tags --recurse=yes . && find . -name '*.rb' -o -name '*.java' -o -name '*.cs' -o -name '*.js' -o -name '*.haml' -o -name '*.erb' -o -name '*.coffee' >| cscope.files && cscope -b -q"

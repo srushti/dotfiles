@@ -18,5 +18,5 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%} %{$fg[yellow]%}✗"
 
 # Put it all together!
-PROMPT="$CAMO_CURRENT_RUBY_ $CAMO_CURRENT_LOCA_ # "
+PROMPT="$CAMO_CURRENT_RUBY_ $CAMO_CURRENT_LOCA_ Ϙ "
 

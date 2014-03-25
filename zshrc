@@ -118,7 +118,7 @@ alias eplocal="vim ~/.zshrc.local && source ~/.zshrc.local"
 export EDITOR="vim"
 if [ -f /Applications/MacVim.app/Contents/MacOS/Vim ]; then
   alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
-  export EDITOR="/Applications/MacVim.app/Contents/MacOS/Vim"
+  export EDITOR="vim"
   export GIT_EDITOR=$EDITOR
 fi
 

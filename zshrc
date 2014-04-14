@@ -112,6 +112,8 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
 export PATH="./bin:$PATH"
 
+export PATH="./node_modules/.bin:$PATH"
+
 alias vi=vim
 alias ep="vim ~/.zshrc && source ~/.zshrc"
 alias eplocal="vim ~/.zshrc.local && source ~/.zshrc.local"

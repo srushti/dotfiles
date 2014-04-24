@@ -141,6 +141,7 @@ if [ -d ~/.soft_links ]; then
 fi
 
 # rbenv
+export RBENV_ROOT=$HOME/.rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 export PATH=./bin:~/.bin:$PATH

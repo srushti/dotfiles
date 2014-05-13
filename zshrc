@@ -140,6 +140,10 @@ if [ -d ~/.soft_links ]; then
   done
 fi
 
+title_manual() {
+  print -Pn "\e]1;$1\a"
+}
+
 # rbenv
 export RBENV_ROOT=$HOME/.rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi

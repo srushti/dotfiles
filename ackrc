@@ -2,6 +2,7 @@
 --ignore-dir=coverage
 --ignore-dir=log
 --ignore-dir=tmp
+--ignore-dir=.tmp
 --ignore-dir=bower_components
 --ignore-file=is:tags
 --ignore-file=match:/cscope/

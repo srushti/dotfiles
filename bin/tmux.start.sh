@@ -3,7 +3,7 @@ export PATH=$PATH:~/.local/bin:/usr/local/bin
 [ "$TMUX" == "" ] || exit 0
 tmux has-session -t _default || tmux new-session -s _default -d
 PS3="Please choose your session: "
-options=("NEW SESSION" "BASH" $(tmux list-sessions -F "#S"))
+options=("NEW SESSION" "Zsh" $(tmux list-sessions -F "#S"))
 echo "Available sessions"
 echo "------------------"
 echo " "
@@ -15,10 +15,11 @@ case $opt in
             tmux new -s "$SESSION_NAME"
             break
             ;;
-        "BASH")
-            bash --login
+        "Zsh")
+            zsh --login
             break;;
         *)
+            title_manual $opt
             tmux attach-session -t $opt
             break
             ;;

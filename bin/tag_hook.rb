@@ -32,9 +32,9 @@ def run_tags(dir, run_in_background = false)
     if File.exists?('Gemfile')
       ctags_command = "bundle list --paths=true | xargs #{CTAGS} -f #{dir}/tags --recurse=yes #{dir}--extra=+f --exclude=.tmp exclude=node_modules --exclude=.git --exclude=public --exclude=tmp --exclude=*.js --exclude=log -R * 2>> /dev/null"
     else
-      ctags_command = "#{CTAGS} -f #{dir}/tags --recurse=yes #{dir} 2>> /dev/null"
+      ctags_command = "ack -f | #{CTAGS} -f -L 2>> /dev/null"
     end
-    cmd = "#{ctags_command} && find #{dir} #{extensions.map{|ext| " -name '*.#{ext}'"}.join(' -o ')} >| cscope.files && cscope -b -q"
+    cmd = "#{ctags_command} && ack -f >| cscope.files && cscope -b -q"
     cmd << ' &' if run_in_background
     $stderr.print "refreshed tags\n"
     #$stderr.print "calling #{cmd}\n"

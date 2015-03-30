@@ -84,7 +84,6 @@ elif which apt-get &> /dev/null; then
   alias un="sudo apt-get remove"
 fi
 alias gi="gem install"
-alias ctags="/usr/local/Cellar/ctags/5.8/bin/ctags"
 alias refreshctags="ack -f | ctags -L - && ack -f >| cscope.files && cscope -b -q"
 alias sp=spork
 alias r=rake

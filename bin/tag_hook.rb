@@ -4,7 +4,7 @@
 # the current dir, called from a git callback, or install itself as a
 # git post-merge and post-commit callback.
 
-CTAGS = '/usr/local/Cellar/ctags/5.8/bin/ctags'
+CTAGS = '/usr/local/bin/ctags'
 HOOKS = %w{post-merge post-checkout}
 HOOKS_DIR = '.git/hooks'
 

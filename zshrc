@@ -156,4 +156,6 @@ export JRUBY_OPTS=--1.9
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
+which thefuck > /dev/null 2>&1 && alias fuck='eval $(thefuck $(fc -ln -1))'
+
 [[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh # This loads NVM

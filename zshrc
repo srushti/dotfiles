@@ -159,3 +159,6 @@ export PATH="/usr/local/heroku/bin:$PATH"
 which thefuck > /dev/null 2>&1 && alias fuck='eval $(thefuck $(fc -ln -1))'
 
 [[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh # This loads NVM
+
+# added by travis gem
+[ -f /Users/srushti/.travis/travis.sh ] && source /Users/srushti/.travis/travis.sh

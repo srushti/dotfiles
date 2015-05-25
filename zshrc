@@ -76,11 +76,13 @@ alias .......='cd ../../../../../..'
 alias ll="ls -l"
 if which brew &> /dev/null; then
   alias i="brew install"
+  alias up-all="brew upgrade --all"
   alias up="brew upgrade"
   alias un="brew uninstall"
 elif which apt-get &> /dev/null; then
   alias i="sudo apt-get install"
   alias up="sudo apt-get upgrade"
+  alias up-all=up
   alias un="sudo apt-get remove"
 fi
 alias gi="gem install"

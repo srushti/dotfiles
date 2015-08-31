@@ -95,15 +95,15 @@ alias be='bundle exec'
 export HISTFILE=~/.zhistory
 
 # git aliases
-alias gst='git st'
-alias gl='git pull'
-alias gp='git push'
-alias gd='git diff | mate'
-alias gc='git commit -v'
-alias gca='git commit -v -a'
-alias gb='git branch'
-alias gba='git branch -a'
-alias glg='git lg'
+#alias gst='git st'
+#alias gl='git pull'
+#alias gp='git push'
+#alias gd='git diff | mate'
+#alias gc='git commit -v'
+#alias gca='git commit -v -a'
+#alias gb='git branch'
+#alias gba='git branch -a'
+#alias glg='git lg'
 
 # directory options
 setopt auto_cd

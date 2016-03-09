@@ -12,7 +12,7 @@ do
 case $opt in
         "NEW SESSION")
             read -p "Enter new session name: " SESSION_NAME
-            title_manual $SESSION_NAME
+            echo -ne "\033]0;$SESSION_NAME\007"
             tmux new -s "$SESSION_NAME"
             break
             ;;
@@ -20,7 +20,7 @@ case $opt in
             zsh --login
             break;;
         *)
-            title_manual $opt
+            echo -ne "\033]0;$opt\007"
             tmux attach-session -t $opt
             break
             ;;

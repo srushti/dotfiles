@@ -24,3 +24,5 @@ eval "$(rbenv init -)"
 
 # added by travis gem
 [ -f /Users/srushti/.travis/travis.sh ] && source /Users/srushti/.travis/travis.sh
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

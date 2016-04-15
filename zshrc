@@ -166,3 +166,5 @@ which thefuck > /dev/null 2>&1 && alias fuck='eval $(thefuck $(fc -ln -1))'
 [ -f /Users/srushti/.travis/travis.sh ] && source /Users/srushti/.travis/travis.sh
 
 test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

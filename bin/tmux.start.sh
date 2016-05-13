@@ -1,9 +1,10 @@
 #!/bin/sh
 export PATH=$PATH:~/.local/bin:/usr/local/bin
 [ "$TMUX" == "" ] || exit 0
-tmux has-session -t _default || tmux new-session -s _default -d
+alias tmux-coloured="TERM=xterm-256color tmux"
+tmux-coloured has-session -t _default || tmux-coloured new-session -s _default -d
 PS3="Please choose your session: "
-options=("NEW SESSION" "Zsh" $(tmux list-sessions -F "#S"))
+options=("NEW SESSION" "Zsh" $(tmux-coloured list-sessions -F "#S"))
 echo "Available sessions"
 echo "------------------"
 echo " "
@@ -13,7 +14,7 @@ case $opt in
         "NEW SESSION")
             read -p "Enter new session name: " SESSION_NAME
             echo -ne "\033]0;$SESSION_NAME\007"
-            tmux new -s "$SESSION_NAME"
+            tmux-coloured new -s "$SESSION_NAME"
             break
             ;;
         "Zsh")
@@ -21,7 +22,7 @@ case $opt in
             break;;
         *)
             echo -ne "\033]0;$opt\007"
-            tmux attach-session -t $opt
+            tmux-coloured attach-session -t $opt
             break
             ;;
     esac

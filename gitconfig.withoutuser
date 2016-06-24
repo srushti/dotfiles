@@ -17,7 +17,7 @@
   excludesfile = ~/.gitignore
 
 [push]
-  default = tracking
+  default = upstream
 
 [advice]
   pushNonFastForward = false

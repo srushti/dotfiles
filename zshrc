@@ -22,7 +22,7 @@ fi
 # CASE_SENSITIVE="true"
 
 # Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment following line if you want to disable colors in ls
 # DISABLE_LS_COLORS="true"
@@ -88,6 +88,8 @@ alias sp=spork
 alias r=rake
 alias b=bundle
 alias be='bundle exec'
+alias dnsget='networksetup -getdnsservers Wi-Fi'
+alias dnsset='networksetup -setdnsservers Wi-Fi'
 
 export HISTFILE=~/.zhistory
 
@@ -155,12 +157,21 @@ export PATH=./bin:~/.bin:$PATH
 
 export JRUBY_OPTS=--1.9
 
+#Neovim true color support
+export NVIM_TUI_ENABLE_TRUE_COLOR=1
+#Neovim cursor shape support
+export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
 which thefuck > /dev/null 2>&1 && alias fuck='eval $(thefuck $(fc -ln -1))'
 
+[[ -s /usr/local/etc/profile.d/z.sh ]] && . /usr/local/etc/profile.d/z.sh
+
 [[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh # This loads NVM
+
+[[ -f $HOME/.bin/tmuxinator.zsh ]] && source $HOME/.bin/tmuxinator.zsh
 
 # added by travis gem
 [ -f /Users/srushti/.travis/travis.sh ] && source /Users/srushti/.travis/travis.sh

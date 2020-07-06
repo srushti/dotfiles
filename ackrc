@@ -8,6 +8,7 @@
 --ignore-dir=bower_components
 --ignore-file=is:tags
 --ignore-file=match:/cscope/
+--ignore-dir=vendor
 --smart-case
 --type-add
 ruby=.haml,.rake

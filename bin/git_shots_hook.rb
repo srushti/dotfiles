@@ -27,14 +27,20 @@ def reinstall
   install
 end
 
+def pick_camera
+  _, *cameras = `imagesnap -l`.split("\n")
+  cameras.inject { |_, camera| /\[(.*)\]\[/.match(camera)[1] }
+end
+
 def take_shot(dir, run_in_background = false)
   year = Time.now.strftime('%Y')
   month = Time.now.strftime('%m')
   FileUtils.mkdir_p("#{ENV['HOME']}/Dropbox/Photos/gitshots/#{year}/#{month}")
   file = "~/Dropbox/Photos/gitshots/#{year}/#{month}/#{Time.now.strftime('%Y%m%d%H%M%S')}.jpg"
   unless File.directory?(File.expand_path("../../rebase-merge", __FILE__))
+    camera = pick_camera
     puts "Taking capture into #{file}!"
-    system "imagesnap -q -w 3 #{file} &"
+    system "imagesnap -q -w 3 #{file} -d \"#{camera}\" &"
   end
 end
 

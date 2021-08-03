@@ -146,12 +146,11 @@ title_manual() {
   print -Pn "\e]1;$1\a"
 }
 
-#thefuck
-eval "$(thefuck --alias)"
-
 # rbenv
 export RBENV_ROOT=$HOME/.rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 export PATH=./bin:~/.bin:$PATH
 

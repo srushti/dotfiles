@@ -1,4 +1,5 @@
 #!/bin/sh
+export EVENT_NOKQUEUE=1
 export PATH=$PATH:~/.local/bin:/usr/local/bin
 [ "$TMUX" == "" ] || exit 0
 alias tmux-coloured="TERM=xterm-256color tmux"

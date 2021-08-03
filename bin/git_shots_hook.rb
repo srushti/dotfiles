@@ -28,7 +28,7 @@ def reinstall
 end
 
 def pick_camera
-  _, *cameras = `imagesnap -l`.split("\n")
+  _, *cameras = `imagesnap -l`.split("\n").collect{ |camera_name| camera_name[3..] }
   cameras.inject { |_, camera| /\[(.*)\]\[/.match(camera)[1] }
 end
 

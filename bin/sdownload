@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'shellwords'
+
+def file_name(full_path)
+  File.basename(full_path, '.*')
+end
+
+full_path = `pbpaste`
+puts full_path
+puts file_name(full_path)
+exec "ffmpeg -i #{Shellwords.escape(full_path)} -c copy #{'video' + ARGV[0] + '.mp4'}"

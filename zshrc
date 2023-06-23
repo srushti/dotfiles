@@ -36,10 +36,11 @@ DISABLE_AUTO_TITLE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git rbenv ruby gem rails brew osx bundler npm tmuxinator)
+plugins=(git gh git-prompt thefuck tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
 
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
 #DISABLE_AUTO_UPDATE="true" # will disable auto updates entirely
+ZSH_COLORIZE_STYLE="colorful"
 
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
@@ -112,6 +113,7 @@ setopt auto_pushd
 
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="./bin:$PATH"
 
 export PATH="./node_modules/.bin:$PATH"

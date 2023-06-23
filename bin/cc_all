@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'shellwords'
+
+Dir.entries('.').each do |entry|
+  if /.*\.(mkv|avi)/.match(entry)
+    system "copy_convert #{entry} &"
+  end
+end

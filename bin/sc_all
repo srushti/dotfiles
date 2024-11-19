@@ -3,6 +3,6 @@ require 'shellwords'
 
 Dir.entries('.').each do |entry|
   if /.*\.(mkv|avi)/.match(entry)
-    system "copy_convert #{Shellwords.escape(entry)}"
+    system "sub_convert #{Shellwords.escape(entry)} %"
   end
 end

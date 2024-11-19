@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'shellwords'
+
+def file_name(full_path)
+  File.basename(full_path, '.*')
+end
+
+full_path = ARGV[0]
+exec "ffmpeg -i #{Shellwords.escape(full_path)} -map 0:v:0 -map 0:a:0 -map 0:s:m:language:eng -c:s mov_text #{Shellwords.escape(file_name(full_path)) + '.mp4'}"

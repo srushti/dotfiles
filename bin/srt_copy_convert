@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require 'shellwords'
+
+def file_name(full_path)
+  File.basename(full_path, '.*')
+end
+
+full_path = ARGV[0]
+full_srt_path = ARGV[1]
+exec "ffmpeg -i #{Shellwords.escape(full_path)} -i #{Shellwords.escape(full_srt_path)} -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng -disposition:s:0 default #{Shellwords.escape(file_name(full_path))}.mp4"

@@ -36,7 +36,7 @@ DISABLE_AUTO_TITLE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git gh git-prompt thefuck tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
+plugins=(git gh git-prompt tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
 
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
 #DISABLE_AUTO_UPDATE="true" # will disable auto updates entirely
@@ -51,7 +51,7 @@ export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X1
 # general
 alias la="ls -lach"
 alias lsd="ls | grep ^d"
-which ack >> /dev/null || alias ack=ack-grep
+# which ack >> /dev/null || alias ack=ack-grep
 
 # global aliases
 alias -g H='| head'
@@ -166,12 +166,11 @@ export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-which thefuck > /dev/null 2>&1 && alias fuck='eval $(thefuck $(fc -ln -1))'
-
 [[ -s /usr/local/etc/profile.d/z.sh ]] && . /usr/local/etc/profile.d/z.sh
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 [[ -f $HOME/.bin/tmuxinator.zsh ]] && source $HOME/.bin/tmuxinator.zsh
 
@@ -180,4 +179,54 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
 
+# FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Use fd to generate the list for directory completion
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" --exclude ".next" . "$1"
+}
+
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" --exclude ".next" . "$1"
+}
+
+# Herd injected PHP 8.3 configuration.
+export HERD_PHP_83_INI_SCAN_DIR="/Users/srushti/Library/Application Support/Herd/config/php/83/"
+
+
+# Herd injected PHP binary.
+export PATH="/Users/srushti/Library/Application Support/Herd/bin/":$PATH
+
+
+# Herd injected PHP 7.4 configuration.
+export HERD_PHP_74_INI_SCAN_DIR="/Users/srushti/Library/Application Support/Herd/config/php/74/"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
+#compdef cdktf
+###-begin-cdktf-completions-###
+#
+# yargs command completion script
+#
+# Installation: node_modules/.bin/cdktf completion >> ~/.zshrc
+#    or node_modules/.bin/cdktf completion >> ~/.zprofile on OSX.
+#
+_cdktf_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" node_modules/.bin/cdktf --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _cdktf_yargs_completions cdktf
+###-end-cdktf-completions-###
+
+
+# bun completions
+[ -s "/Users/srushti/.bun/_bun" ] && source "/Users/srushti/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

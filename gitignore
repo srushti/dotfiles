@@ -15,3 +15,4 @@ custom_plan.rb
 .nvmrc
 .vagrant
 gin-bin
+.yarn

@@ -6,3 +6,5 @@ tags
 cscope.*
 vendor/assets/components/
 public/styleguide
+dist/
+cdktf.out/

@@ -1,3 +1,5 @@
+--ignore-dir=.gen
+--ignore-dir=.yarn
 --ignore-dir=.idea
 --ignore-dir=coverage
 --ignore-dir=log
@@ -9,6 +11,9 @@
 --ignore-file=is:tags
 --ignore-file=match:/cscope/
 --ignore-dir=vendor
+--ignore-dir=.next
+--ignore-dir=dist
+--ignore-dir=cdktf.out
 --smart-case
 --type-add
 ruby=.haml,.rake

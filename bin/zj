@@ -1,0 +1,248 @@
+#!/usr/bin/env bash
+
+# Zellij Session Manager - like tmuxinator for zellij
+# Usage: zj
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Configuration
+ZELLIJ_LAYOUTS_DIR="$HOME/.config/zellij/layouts"
+BUILTIN_LAYOUTS=("default" "compact" "strider")
+
+# Ensure layouts directory exists
+mkdir -p "$ZELLIJ_LAYOUTS_DIR"
+
+# Function to display colored output
+print_colored() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+# Function to get all available layouts
+get_layouts() {
+    local layouts=()
+    
+    # Add built-in layouts
+    for layout in "${BUILTIN_LAYOUTS[@]}"; do
+        layouts+=("$layout")
+    done
+    
+    # Add custom layouts from ~/.config/zellij/layouts/
+    if [[ -d "$ZELLIJ_LAYOUTS_DIR" ]]; then
+        for layout_file in "$ZELLIJ_LAYOUTS_DIR"/*.kdl; do
+            if [[ -f "$layout_file" ]]; then
+                local layout_name=$(basename "$layout_file" .kdl)
+                layouts+=("$layout_name")
+            fi
+        done
+    fi
+    
+    printf '%s\n' "${layouts[@]}" | sort -u
+}
+
+# Function to get all sessions (clean session names)
+get_sessions() {
+    zellij list-sessions 2>/dev/null | sed -E 's/\x1b\[[0-9;]*m//g' | awk '{print $1}' | grep -v '^$' | sed 's/[[:space:]]*$//' || true
+}
+
+# Function to display sessions
+display_sessions() {
+    local sessions=$(get_sessions)
+    if [[ -z "$sessions" ]]; then
+        print_colored $YELLOW "No active sessions found."
+        return 1
+    fi
+    
+    print_colored $CYAN "Active Sessions:"
+    echo "$sessions" | nl -w2 -s') '
+    return 0
+}
+
+# Function to display layouts
+display_layouts() {
+    local layouts=$(get_layouts)
+    if [[ -z "$layouts" ]]; then
+        print_colored $YELLOW "No layouts found."
+        return 1
+    fi
+    
+    print_colored $CYAN "Available Layouts:"
+    echo "$layouts" | nl -w2 -s') '
+}
+
+# Function to select from a list
+select_from_list() {
+    local prompt=$1
+    local items=$2
+    local count=$(echo "$items" | wc -l)
+    
+    if [[ $count -eq 0 ]]; then
+        return 1
+    fi
+    
+    while true; do
+        echo
+        read -p "$(print_colored $GREEN "$prompt (1-$count): ")" choice
+        
+        if [[ "$choice" =~ ^[0-9]+$ ]] && [[ $choice -ge 1 ]] && [[ $choice -le $count ]]; then
+            echo "$items" | sed -n "${choice}p"
+            return 0
+        else
+            print_colored $RED "Invalid choice. Please enter a number between 1 and $count."
+        fi
+    done
+}
+
+# Function to attach to existing session
+attach_session() {
+    local session_name=$(echo "$1" | tr -d '\n\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    print_colored $GREEN "Attaching to session: '$session_name'"
+    exec zellij attach "$session_name"
+}
+
+# Function to create new session with layout
+create_session() {
+    local layout_name=$(echo "$1" | tr -d '\n\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    print_colored $GREEN "Creating new session '$layout_name' with layout '$layout_name'"
+    
+    # Check if layout exists as a file
+    if [[ -f "$ZELLIJ_LAYOUTS_DIR/$layout_name.kdl" ]]; then
+        exec zellij --session "$layout_name" --layout "$ZELLIJ_LAYOUTS_DIR/$layout_name.kdl"
+    else
+        # Try as built-in layout
+        exec zellij --session "$layout_name" --layout "$layout_name"
+    fi
+}
+
+# Main menu
+show_menu() {
+    echo
+    print_colored $PURPLE "╔══════════════════════════════════════╗"
+    print_colored $PURPLE "║        Zellij Session Manager        ║"
+    print_colored $PURPLE "╚══════════════════════════════════════╝"
+    echo
+    
+    local has_sessions=false
+    local sessions=$(get_sessions)
+    
+    if [[ -n "$sessions" ]]; then
+        has_sessions=true
+        display_sessions
+        echo
+    fi
+    
+    display_layouts
+    echo
+    
+    print_colored $CYAN "Options:"
+    if [[ "$has_sessions" == true ]]; then
+        echo "1) Attach to existing session"
+        echo "2) Create new session with layout"
+        echo "3) Exit"
+        echo
+        
+        while true; do
+            read -p "$(print_colored $GREEN "Choose an option (1-3): ")" main_choice
+            case $main_choice in
+                1)
+                    local selected_session=$(select_from_list "Select session to attach" "$sessions")
+                    if [[ -n "$selected_session" ]]; then
+                        attach_session "$selected_session"
+                    fi
+                    break
+                    ;;
+                2)
+                    local layouts=$(get_layouts)
+                    local selected_layout=$(select_from_list "Select layout for new session" "$layouts")
+                    if [[ -n "$selected_layout" ]]; then
+                        create_session "$selected_layout"
+                    fi
+                    break
+                    ;;
+                3)
+                    print_colored $YELLOW "Goodbye!"
+                    exit 0
+                    ;;
+                *)
+                    print_colored $RED "Invalid option. Please choose 1, 2, or 3."
+                    ;;
+            esac
+        done
+    else
+        echo "1) Create new session with layout"
+        echo "2) Exit"
+        echo
+        
+        while true; do
+            read -p "$(print_colored $GREEN "Choose an option (1-2): ")" main_choice
+            case $main_choice in
+                1)
+                    local layouts=$(get_layouts)
+                    local selected_layout=$(select_from_list "Select layout for new session" "$layouts")
+                    if [[ -n "$selected_layout" ]]; then
+                        create_session "$selected_layout"
+                    fi
+                    break
+                    ;;
+                2)
+                    print_colored $YELLOW "Goodbye!"
+                    exit 0
+                    ;;
+                *)
+                    print_colored $RED "Invalid option. Please choose 1 or 2."
+                    ;;
+            esac
+        done
+    fi
+}
+
+# Check if zellij is installed
+if ! command -v zellij &> /dev/null; then
+    print_colored $RED "Error: zellij is not installed or not in PATH"
+    exit 1
+fi
+
+# Main execution
+case "${1:-}" in
+    -h|--help|help)
+        echo "Zellij Session Manager"
+        echo "Usage: $0 [options]"
+        echo ""
+        echo "Options:"
+        echo "  -h, --help    Show this help message"
+        echo "  -l, --list    List all sessions"
+        echo "  -k, --kill    Kill all sessions"
+        echo ""
+        echo "Interactive mode (default): Shows menu to select/create sessions"
+        ;;
+    -l|--list)
+        sessions=$(get_sessions)
+        if [[ -n "$sessions" ]]; then
+            display_sessions
+        else
+            print_colored $YELLOW "No active sessions."
+        fi
+        ;;
+    -k|--kill)
+        print_colored $YELLOW "Killing all sessions..."
+        zellij delete-all-sessions --yes 2>/dev/null || print_colored $YELLOW "No sessions to kill."
+        ;;
+    "")
+        show_menu
+        ;;
+    *)
+        print_colored $RED "Unknown option: $1"
+        print_colored $YELLOW "Use '$0 --help' for usage information."
+        exit 1
+        ;;
+esac

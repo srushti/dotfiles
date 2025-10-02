@@ -1,18 +1,22 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
-if [ -s $HOME/.oh-my-zsh-custom ]; then
-    ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
-fi
+# source antidote
+source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
+
+# # Path to your oh-my-zsh configuration.
+# ZSH=$HOME/.oh-my-zsh
+# if [ -s $HOME/.oh-my-zsh-custom ]; then
+#     ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
+# fi
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-if [ -n $ZSH_CUSTOM ] && [ -f $ZSH_CUSTOM/`whoami`.zsh-theme ]; then
-    ZSH_THEME="`whoami`"
-else
-    ZSH_THEME="kitallis-darkblood"
-fi
+# if [ -n $ZSH_CUSTOM ] && [ -f $ZSH_CUSTOM/`whoami`.zsh-theme ]; then
+#     ZSH_THEME="`whoami`"
+# fi
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -22,13 +26,13 @@ fi
 # CASE_SENSITIVE="true"
 
 # Comment this out to disable weekly auto-update checks
-DISABLE_AUTO_UPDATE="true"
+# DISABLE_AUTO_UPDATE="true"
 
 # Uncomment following line if you want to disable colors in ls
 # DISABLE_LS_COLORS="true"
 
 # Uncomment following line if you want to disable autosetting terminal title.
-DISABLE_AUTO_TITLE="true"
+# DISABLE_AUTO_TITLE="true"
 
 # Uncomment following line if you want red dots to be displayed while waiting for completion
 # COMPLETION_WAITING_DOTS="true"
@@ -36,10 +40,9 @@ DISABLE_AUTO_TITLE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git gh git-prompt tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
+# plugins=(git gh git-prompt tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
 
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
-#DISABLE_AUTO_UPDATE="true" # will disable auto updates entirely
 ZSH_COLORIZE_STYLE="colorful"
 
 source $ZSH/oh-my-zsh.sh
@@ -56,7 +59,7 @@ alias lsd="ls | grep ^d"
 # global aliases
 alias -g H='| head'
 alias -g T='| tail'
-alias -g G='| ack'
+alias -g G='| rg'
 alias -g L="| less"
 alias -g M="| most"
 alias -g B="&|"
@@ -128,7 +131,7 @@ if [ -f /usr/local/bin/nvim ]; then
   export GIT_EDITOR=$EDITOR
 fi
 
-export LESS='-RM' # -R: print ANSI color escapes directly to the screen
+export LESS='-RM --no-init --quit-if-one-screen' # -R: print ANSI color escapes directly to the screen
                   # -M: use very verbose prompt, with pos/%
 
 # folder aliases
@@ -223,6 +226,14 @@ _cdktf_yargs_completions()
 compdef _cdktf_yargs_completions cdktf
 ###-end-cdktf-completions-###
 
+#zk
+export ZK_NOTEBOOK_DIR="$HOME/.config/zk/notes"
+mkdir -p $ZK_NOTEBOOK_DIR
+
+# ~/.zshrc
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 
 # bun completions
 [ -s "/Users/srushti/.bun/_bun" ] && source "/Users/srushti/.bun/_bun"
@@ -230,3 +241,15 @@ compdef _cdktf_yargs_completions cdktf
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export XDG_CONFIG_HOME=/Users/srushti/.config
+
+eval "$(zoxide init zsh)"
+
+# eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/srushti.json)"
+eval "$(starship init zsh)"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/srushti/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/srushti/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc'; fi

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+
+def file_name(full_path)
+  File.basename(full_path, '.*')
+end
+
+full_path = ARGV[0]
+exec "HandBrakeCLI --audio-lang-list any --all-audio --subtitle-lang-list any --all-subtitles -i #{Shellwords.escape(full_path)} -o #{Shellwords.escape(file_name(full_path))}.mp4"

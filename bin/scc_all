@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require 'shellwords'
 
-Dir.entries('.').each do |entry|
-  if /.*\.(mkv|avi)/.match(entry)
-    system "sub_copy_convert #{Shellwords.escape(entry)} &"
-  end
+Dir.entries('.').sort.each do |entry|
+  system "sub_copy_convert #{Shellwords.escape(entry)}" if /.*\.(m4v|mkv|avi)/.match(entry)
 end

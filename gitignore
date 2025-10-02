@@ -16,3 +16,13 @@ custom_plan.rb
 .vagrant
 gin-bin
 .yarn
+.zk/
+.aider.*
+.claude/
+hermit
+activate-hermit
+activate-hermit.fish
+hermit.hcl
+README.hermit.md
+*-private-key.json
+.clinic/

@@ -253,3 +253,6 @@ if [ -f '/Users/srushti/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Use
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Added by Antigravity
+export PATH="/Users/srushti/.antigravity/antigravity/bin:$PATH"

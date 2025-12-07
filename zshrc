@@ -1,3 +1,8 @@
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:$PATH
+#[[ -e /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export PATH="/opt/homebrew/bin:$PATH"
+
 # source antidote
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
 
@@ -45,11 +50,8 @@ antidote load
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
 ZSH_COLORIZE_STYLE="colorful"
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
-
-# Customize to your needs...
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin
 
 # general
 alias la="ls -lach"
@@ -115,6 +117,7 @@ setopt auto_pushd
 # paths -------------------------------------------------------
 
 export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.rbenv/shims:$PATH"
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="./bin:$PATH"
@@ -122,6 +125,7 @@ export PATH="./bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
 
 alias vi=vim
+alias vim=nvim
 alias ep="vim ~/.zshrc && source ~/.zshrc"
 alias eplocal="vim ~/.zshrc.local && source ~/.zshrc.local"
 export EDITOR="vim"
@@ -172,13 +176,10 @@ export PATH="/usr/local/heroku/bin:$PATH"
 [[ -s /usr/local/etc/profile.d/z.sh ]] && . /usr/local/etc/profile.d/z.sh
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 [[ -f $HOME/.bin/tmuxinator.zsh ]] && source $HOME/.bin/tmuxinator.zsh
-
-# added by travis gem
-[ -f /Users/srushti/.travis/travis.sh ] && source /Users/srushti/.travis/travis.sh
 
 test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
 
@@ -194,15 +195,15 @@ _fzf_compgen_dir() {
 }
 
 # Herd injected PHP 8.3 configuration.
-export HERD_PHP_83_INI_SCAN_DIR="/Users/srushti/Library/Application Support/Herd/config/php/83/"
+export HERD_PHP_83_INI_SCAN_DIR="~/Library/Application Support/Herd/config/php/83/"
 
 
 # Herd injected PHP binary.
-export PATH="/Users/srushti/Library/Application Support/Herd/bin/":$PATH
+export PATH="~/Library/Application Support/Herd/bin/":$PATH
 
 
 # Herd injected PHP 7.4 configuration.
-export HERD_PHP_74_INI_SCAN_DIR="/Users/srushti/Library/Application Support/Herd/config/php/74/"
+export HERD_PHP_74_INI_SCAN_DIR="~/Library/Application Support/Herd/config/php/74/"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
@@ -236,23 +237,19 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
 
 # bun completions
-[ -s "/Users/srushti/.bun/_bun" ] && source "/Users/srushti/.bun/_bun"
+[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-export XDG_CONFIG_HOME=/Users/srushti/.config
+export XDG_CONFIG_HOME=~/.config
 
 eval "$(zoxide init zsh)"
 
 # eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/srushti.json)"
 eval "$(starship init zsh)"
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/srushti/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/srushti/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/srushti/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+eval "$(mise activate zsh)"
 
 # Added by Antigravity
-export PATH="/Users/srushti/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"

@@ -1,11 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 export EVENT_NOKQUEUE=1
-export PATH=$PATH:~/.local/bin:/usr/local/bin
-[ "$TMUX" == "" ] || exit 0
-alias tmux-coloured="TERM=xterm-256color tmux"
-tmux-coloured has-session -t _default || tmux-coloured new-session -s _default -d
+export PATH=$PATH:~/.local/bin:/usr/local/bin:/opt/homebrew/bin
+export TERM=xterm-256color
+
+# Exit if already in tmux or zellij
+if [ -n "$TMUX" ] || [ -n "$ZELLIJ" ]; then
+    echo "Already in a terminal multiplexer session. Exiting."
+    exit 0
+fi
+
+tmux has-session -t _default || tmux new-session -s _default -d
+COLUMNS=1
 PS3="Please choose your session: "
-options=("NEW SESSION" "Zsh" $(tmux-coloured list-sessions -F "#S"))
+options=("NEW SESSION" "Zsh" $(tmux list-sessions -F "#S"))
 echo "Available sessions"
 echo "------------------"
 echo " "
@@ -14,16 +21,16 @@ do
 case $opt in
         "NEW SESSION")
             read -p "Enter new session name: " SESSION_NAME
-            echo -ne "\033]0;$SESSION_NAME\007"
-            tmux-coloured new -s "$SESSION_NAME"
+            printf "\033]0;%s\007" "$SESSION_NAME"
+            exec tmux new -s "$SESSION_NAME"
             break
             ;;
         "Zsh")
-            zsh --login
+            exec zsh --login
             break;;
         *)
-            echo -ne "\033]0;$opt\007"
-            tmux-coloured attach-session -t $opt
+            printf "\033]0;%s\007" "$opt"
+            exec tmux attach-session -t $opt
             break
             ;;
     esac

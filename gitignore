@@ -17,7 +17,7 @@ custom_plan.rb
 gin-bin
 .yarn
 .zk/
-.aider.*
+.aider*
 .claude/
 hermit
 activate-hermit
@@ -26,3 +26,8 @@ hermit.hcl
 README.hermit.md
 *-private-key.json
 .clinic/
+.expert
+.elixir_ls/
+.beads
+.goose
+AGENTS.md

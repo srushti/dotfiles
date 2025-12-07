@@ -9,6 +9,7 @@ require 'fileutils'
 
 HOOKS = %w[post-commit].freeze
 HOOKS_DIR = '.git/hooks'
+GIT_SHOTS_DIR = "#{ENV['HOME']}/Library/CloudStorage/Dropbox/Photos/gitshots"
 
 def ensure_git_repo
   return if File.writable?(HOOKS_DIR)
@@ -36,8 +37,8 @@ end
 def file_path
   year = Time.now.strftime('%Y')
   month = Time.now.strftime('%m')
-  FileUtils.mkdir_p("#{ENV['HOME']}/Dropbox/Photos/gitshots/#{year}/#{month}")
-  "~/Dropbox/Photos/gitshots/#{year}/#{month}/#{Time.now.strftime('%Y%m%d%H%M%S')}.jpg"
+  FileUtils.mkdir_p("#{GIT_SHOTS_DIR}/#{year}/#{month}")
+  "#{GIT_SHOTS_DIR}/#{year}/#{month}/#{Time.now.strftime('%Y%m%d%H%M%S')}.jpg"
 end
 
 def take_shot(run_in_background: false)

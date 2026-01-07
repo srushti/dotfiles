@@ -6,6 +6,7 @@
 # git post-commit callback.
 
 require 'fileutils'
+require 'time'
 
 HOOKS = %w[post-commit].freeze
 HOOKS_DIR = '.git/hooks'
@@ -41,17 +42,50 @@ def file_path
   "#{GIT_SHOTS_DIR}/#{year}/#{month}/#{Time.now.strftime('%Y%m%d%H%M%S')}.jpg"
 end
 
+def recent_shot?
+  year = Time.now.year
+  month = Time.now.strftime('%m')
+
+  # Check current month
+  latest = Dir.glob("#{GIT_SHOTS_DIR}/#{year}/#{month}/*.jpg").max
+
+  # Check previous month if we are in the first hour of the new month
+  if latest.nil? && Time.now.day == 1 && Time.now.hour.zero?
+    prev_time = Time.now - 86_400
+    prev_year = prev_time.year
+    prev_month = prev_time.strftime('%m')
+    latest = Dir.glob("#{GIT_SHOTS_DIR}/#{prev_year}/#{prev_month}/*.jpg").max
+  end
+
+  return false unless latest
+
+  begin
+    # Filename format: YYYYMMDDHHMMSS.jpg
+    shot_time = Time.strptime(File.basename(latest, '.jpg'), '%Y%m%d%H%M%S')
+    (Time.now - shot_time) < 3600
+  rescue ArgumentError
+    false
+  end
+end
+
 def take_shot(run_in_background: false)
   return if File.directory?(File.expand_path('../rebase-merge', __dir__))
 
+  return if recent_shot?
+
   puts "Taking capture into #{file_path}!"
-  command = "ffmpeg -f avfoundation -video_size 1280x720 -framerate 30 -i '0' -vframes 1 #{file_path}"
+  # Using imagesnap for capture (similar to lolcommits)
+  # -q: quiet, -w 1: 1s warmup
+  command = "imagesnap -q -w 1 #{file_path}"
+
   if run_in_background
-    IO.popen(command)
+    # Run in background and detach
+    pid = spawn(command, %i[out err] => '/dev/null')
+    Process.detach(pid)
   else
     system command
   end
-rescue Error
+rescue StandardError
   puts 'Git shot failed'
 end
 
@@ -61,11 +95,13 @@ end
 
 def install_hook(hook)
   if File.exist?(hook)
-    $stderr.print "A file already exists at #{hook}, and will NOT be replaced.\n"
+    $stderr.print "A file already exists at #{hook}, and will NOT be replaced.
+"
     return
   end
 
-  print "Linking #{__FILE__} to #{hook}\n"
+  print "Linking #{__FILE__} to #{hook}
+"
   `ln -s #{__FILE__} #{hook}`
 end
 

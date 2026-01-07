@@ -33,7 +33,7 @@ antidote load
 # Comment this out to disable weekly auto-update checks
 # DISABLE_AUTO_UPDATE="true"
 
-# Uncomment following line if you want to disable colors in ls
+# Uncomment following line if you want to disable colors in eza
 # DISABLE_LS_COLORS="true"
 
 # Uncomment following line if you want to disable autosetting terminal title.
@@ -54,8 +54,8 @@ ZSH_COLORIZE_STYLE="colorful"
 unsetopt correct_all
 
 # general
-alias la="ls -lach"
-alias lsd="ls | grep ^d"
+alias la="eza -lach"
+alias lsd="eza | grep ^d"
 # which ack >> /dev/null || alias ack=ack-grep
 
 # global aliases
@@ -76,7 +76,7 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias .......='cd ../../../../../..'
 
-alias ll="ls -l"
+alias ll="eza -l"
 if which brew &> /dev/null; then
   alias i="brew install"
   alias up-all="brew upgrade --all"

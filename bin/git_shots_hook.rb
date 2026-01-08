@@ -73,7 +73,7 @@ def take_shot(run_in_background: false)
 
   return if recent_shot?
 
-  puts "Taking capture into #{file_path}!"
+  # puts "Taking capture into #{file_path}!"
   # Using imagesnap for capture (similar to lolcommits)
   # -q: quiet, -w 1: 1s warmup
   command = "imagesnap -q -w 1 #{file_path}"

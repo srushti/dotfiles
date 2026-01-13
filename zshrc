@@ -205,27 +205,9 @@ export PATH="~/Library/Application Support/Herd/bin/":$PATH
 # Herd injected PHP 7.4 configuration.
 export HERD_PHP_74_INI_SCAN_DIR="~/Library/Application Support/Herd/config/php/74/"
 
-autoload -U +X bashcompinit && bashcompinit
+autoload -U compinit && compinit
+autoload -U bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
-#compdef cdktf
-###-begin-cdktf-completions-###
-#
-# yargs command completion script
-#
-# Installation: node_modules/.bin/cdktf completion >> ~/.zshrc
-#    or node_modules/.bin/cdktf completion >> ~/.zprofile on OSX.
-#
-_cdktf_yargs_completions()
-{
-  local reply
-  local si=$IFS
-  IFS=$'
-' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" node_modules/.bin/cdktf --get-yargs-completions "${words[@]}"))
-  IFS=$si
-  _describe 'values' reply
-}
-compdef _cdktf_yargs_completions cdktf
-###-end-cdktf-completions-###
 
 #zk
 export ZK_NOTEBOOK_DIR="$HOME/.config/zk/notes"

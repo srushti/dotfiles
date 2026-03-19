@@ -28,3 +28,6 @@
   resolveConflict = false
   implicitIdentity = false
   detachedHead = false
+
+[init]
+	defaultBranch = main

@@ -2,7 +2,35 @@
 # frozen_string_literal: true
 
 require 'shellwords'
+require 'thread'
 
+# Configuration
+PARALLEL_JOBS = 3
+EXTENSIONS = /.*\.(mkv|avi|m4v)/
+
+# Initialize the queue and find files
+queue = Queue.new
 Dir.entries('.').sort.each do |entry|
-  system "hb_convert #{Shellwords.escape(entry)}" if /.*\.(mkv|avi|m4v)/.match(entry)
+  queue << entry if EXTENSIONS.match(entry)
 end
+
+# Create the worker threads
+workers = Array.new(PARALLEL_JOBS) do
+  Thread.new do
+    until queue.empty?
+      # Pop(true) prevents threads from hanging if the queue empties mid-check
+      begin
+        file = queue.pop(true)
+        puts "Starting: #{file}"
+        system "hb_convert #{Shellwords.escape(file)}"
+        puts "Finished: #{file}"
+      rescue ThreadError
+        # Queue is empty
+      end
+    end
+  end
+end
+
+# Wait for all workers to finish
+workers.each(&:join)
+puts "All conversions complete."

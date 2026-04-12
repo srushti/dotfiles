@@ -159,7 +159,7 @@ title_manual() {
 export RBENV_ROOT=$HOME/.rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 
 export PATH=./bin:~/.bin:$PATH
 
@@ -227,7 +227,7 @@ eval "$(zoxide init zsh)"
 # eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/srushti.json)"
 eval "$(starship init zsh)"
 
-eval "$(mise activate zsh)"
-
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+
+eval "$(mise activate zsh)"

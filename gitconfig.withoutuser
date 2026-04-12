@@ -16,7 +16,7 @@
 
 [core]
   excludesfile = ~/.gitignore
-  editor = vim
+  editor = nvim
 
 [push]
   default = upstream
@@ -31,3 +31,13 @@
 
 [init]
 	defaultBranch = main
+
+[core]
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  dark = true

@@ -155,6 +155,10 @@ title_manual() {
   print -Pn "\e]1;$1\a"
 }
 
+# Use bat for help files
+alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+
 # rbenv
 export RBENV_ROOT=$HOME/.rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi

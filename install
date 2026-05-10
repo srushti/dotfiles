@@ -3,18 +3,11 @@ replace=""
 
 [ -e 'gitconfig' ] && rm gitconfig
 if [ -e 'gitconfig.user' ]; then
-    cat gitconfig.user >> gitconfig
+    cat gitconfig.user >>gitconfig
 else
     echo "Create a gitconfig.user with just your own user details."
 fi
-cat gitconfig.withoutuser >> gitconfig
-
-if [ ! -s $HOME/.oh-my-zsh ]; then
-    echo "time to get oh-my-zsh"
-    git clone --depth 1 git://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
-else
-    echo "oh my zsh already exists - skipping it"
-fi
+cat gitconfig.withoutuser >>gitconfig
 
 if [ ! -s $HOME/.rbenv ]; then
     rbenv_path=$HOME/.rbenv
@@ -25,12 +18,10 @@ else
     echo "rbenv already exists - skipping it"
 fi
 
-for f in $(ls)
-do
+for f in $(ls); do
     test $f = "install" && continue
     test $f = "gitconfig.withoutuser" && continue
     test $f = "gitconfig.user" && continue
-    test $f = "oh-my-zsh" && continue
     test $f = "rbenv" && continue
     dest="$HOME/.$f"
     file="$PWD/$f"
@@ -54,6 +45,5 @@ do
         ln -s $file $dest
     fi
 done
-
 
 nano $HOME/.gitconfig

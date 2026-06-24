@@ -1,7 +1,16 @@
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:$PATH
+
+# Ghostty shell integration sends OSC escape sequences that tmux can't handle,
+# causing ~2s stall on every new prompt. Disable cursor/title features inside tmux.
+[[ -n $TMUX ]] && unset GHOSTTY_RESOURCES_DIR GHOSTTY_SHELL_FEATURES
 #[[ -e /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export PATH="/opt/homebrew/bin:$PATH"
+
+# zsh-vi-mode: init synchronously so it doesn't swallow typeahead input
+# (kept for if zsh-vi-mode is re-added; belak/zsh-utils editor needs bindkey -v to activate vi mode)
+bindkey -v
+ZVM_INIT_MODE=sourcing
 
 # source antidote
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
@@ -56,6 +65,7 @@ unsetopt correct_all
 # general
 alias la="eza -lach"
 alias lsd="eza | grep ^d"
+alias ls="eza"
 # which ack >> /dev/null || alias ack=ack-grep
 
 # global aliases
@@ -129,7 +139,7 @@ alias vim=nvim
 alias ep="vim ~/.zshrc && source ~/.zshrc"
 alias eplocal="vim ~/.zshrc.local && source ~/.zshrc.local"
 export EDITOR="vim"
-if [ -f /usr/local/bin/nvim ]; then
+if [ -f `which nvim` ]; then
   alias vim="nvim"
   export EDITOR="nvim"
   export GIT_EDITOR=$EDITOR
@@ -154,12 +164,6 @@ fi
 title_manual() {
   print -Pn "\e]1;$1\a"
 }
-
-# rbenv
-export RBENV_ROOT=$HOME/.rbenv
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 
 export PATH=./bin:~/.bin:$PATH
 
@@ -201,7 +205,13 @@ export PATH="~/Library/Application Support/Herd/bin/":$PATH
 # Herd injected PHP 7.4 configuration.
 export HERD_PHP_74_INI_SCAN_DIR="~/Library/Application Support/Herd/config/php/74/"
 
-autoload -U compinit && compinit
+# Only regenerate the completion dump once per day — makes startup ~700ms faster
+autoload -U compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C  # skip the security check, use cached dump
+fi
 autoload -U bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
 
@@ -231,3 +241,4 @@ eval "$(starship init zsh)"
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 eval "$(mise activate zsh)"
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"

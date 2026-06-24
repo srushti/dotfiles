@@ -31,8 +31,16 @@ def reinstall
 end
 
 def pick_camera
-  _, *cameras = `imagesnap -l`.split("\n").collect { |camera_name| camera_name[3..] }
-  cameras.inject { |_, camera| /\[(.*)\]\[/.match(camera)[1] }
+  # Default to first camera (0) - MacBook Pro Camera
+  # Use ffmpeg to list devices and pick the first non-Desk View camera
+  cameras = `ffmpeg -f avfoundation -list_devices true -i "" 2>&1`.split("\n")
+  cameras.each do |line|
+    # Look for cameras that are not "Desk View Camera"
+    if line =~ /\[(\d+)\]\s+(.+)$/ && !line.include?('Desk View')
+      return $1.to_i
+    end
+  end
+  0 # Default to first camera
 end
 
 def file_path
@@ -74,9 +82,14 @@ def take_shot(run_in_background: false)
   return if recent_shot?
 
   # puts "Taking capture into #{file_path}!"
-  # Using imagesnap for capture (similar to lolcommits)
-  # -q: quiet, -w 1: 1s warmup
-  command = "imagesnap -q -w 1 #{file_path}"
+  # Using ffmpeg for capture (more reliable on modern macOS)
+  # -f avfoundation: use macOS AVFoundation
+  # -video_size 1280x720: reasonable resolution
+  # -framerate 30: required framerate for the camera
+  # -i "0": use first camera (MacBook Pro Camera)
+  # -frames:v 1: capture only one frame
+  camera_id = pick_camera
+  command = "ffmpeg -f avfoundation -video_size 1280x720 -framerate 30 -i \"#{camera_id}\" -frames:v 1 -update 1 \"#{file_path}\" 2>/dev/null"
 
   if run_in_background
     # Run in background and detach

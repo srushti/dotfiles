@@ -1,7 +1,5 @@
 # .zsh_plugins.txt - comments begin with "#"
 
-jeffreytse/zsh-vi-mode
-
 rupa/z
 
 romkatv/zsh-bench kind:path
@@ -34,3 +32,6 @@ mattmc3/zfunctions
 zsh-users/zsh-autosuggestions
 zdharma-continuum/fast-syntax-highlighting kind:defer
 zsh-users/zsh-history-substring-search
+
+# Load zsh-vi-mode last so its keymap bindings survive other plugins
+jeffreytse/zsh-vi-mode

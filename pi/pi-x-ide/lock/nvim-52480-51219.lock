@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "ide": "nvim",
+  "name": "Neovim",
+  "transport": "ws",
+  "host": "127.0.0.1",
+  "port": 51219,
+  "authToken": "8dae1a3ac21be5035d421115b4fdd17082960ca3dff2380cd6243ac394e1de8a",
+  "workspaceFolders": [
+    "/Users/srushti/code/dotfiles"
+  ],
+  "pid": 52480,
+  "runningInWindows": false,
+  "createdAt": "2026-08-07T10:30:26.632Z",
+  "updatedAt": "2026-08-07T10:30:26.634Z"
+}

@@ -1,0 +1,10 @@
+{
+  "packages": [
+    "npm:tokenomy-pi"
+  ],
+  "lastChangelogVersion": "0.83.0",
+  "theme": "dark",
+  "defaultProvider": "openrouter",
+  "defaultModel": "moonshotai/kimi-k2.7-code",
+  "defaultThinkingLevel": "minimal"
+}

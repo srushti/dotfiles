@@ -12,3 +12,8 @@ emacs.d/url
 gitconfig
 gitconfig.user
 oh-my-zsh/custom/user-specific.zsh
+pi/tokenomy-cache
+pi/agent/sessions/
+pi/agent/models-store.json
+pi/agent/bin/
+

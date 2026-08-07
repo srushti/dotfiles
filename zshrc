@@ -68,6 +68,8 @@ alias lsd="eza | grep ^d"
 alias ls="eza"
 # which ack >> /dev/null || alias ack=ack-grep
 
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
 # global aliases
 alias -g H='| head'
 alias -g T='| tail'
@@ -184,7 +186,9 @@ export PATH="/usr/local/heroku/bin:$PATH"
 test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
 
 # FZF
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Source key bindings and completion from Homebrew installation
+source $(brew --prefix)/opt/fzf/shell/key-bindings.zsh
+source $(brew --prefix)/opt/fzf/shell/completion.zsh
 # Use fd to generate the list for directory completion
 _fzf_compgen_path() {
   fd --hidden --follow --exclude ".git" --exclude ".next" . "$1"

@@ -246,3 +246,5 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 eval "$(mise activate zsh)"
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"

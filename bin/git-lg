@@ -1,10 +1,14 @@
 #!/bin/bash
 # Git lg script - interactive commit browser with clipboard copy
 
-path="${1:-.}"
+if [ $# -gt 0 ]; then
+  path_filter=(-- "$1")
+else
+  path_filter=()
+fi
 
 # Run fzf to select a commit
-commit=$(git log --oneline --color=always -- "$path" | fzf --ansi --preview 'git show --color=always {1}' --bind 'enter:execute-silent(echo {1} | pbcopy)+abort' --print-query 2>/dev/null | tail -1 | awk '{print $1}')
+commit=$(git log --format="%h %as %s" --color=always "${path_filter[@]}" | fzf --ansi --preview 'git show --color=always {1}' --bind 'enter:execute-silent(echo {1} | pbcopy)+abort' --print-query 2>/dev/null | tail -1 | awk '{print $1}')
 
 # If a commit was selected, print it
 if [ -n "$commit" ]; then

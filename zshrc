@@ -248,3 +248,8 @@ eval "$(mise activate zsh)"
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# pi-facelift Shiki theme (must match a bundled Shiki theme)
+export FACELIFT_THEME=gruvbox-dark-hard
+export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
+export PI_SKIP_VERSION_CHECK=1

@@ -10,16 +10,14 @@ require 'cgi'
 # Prefer unar for .cbr extraction: 7z cannot decode newer RAR5 methods
 UNAR = ENV["PATH"].split(File::PATH_SEPARATOR).map { |p| File.join(p, "unar") }.find { |p| File.executable?(p) }
 
-options = { manga: false, author: nil, apple: false }
+options = { manga: false }
 OptionParser.new do |opts|
-  opts.banner = "Usage: epub_convert [options] <cbr_or_cbz_file>"
+  opts.banner = "Usage: comic_convert [options] <cbr_or_cbz_file>"
   opts.on("-m", "--manga", "Enable manga mode") { options[:manga] = true }
-  opts.on("-a", "--apple", "Apple-friendly output (no device profile, no cropping)") { options[:apple] = true }
-  opts.on("--author AUTHOR", "Set author/writer") { |v| options[:author] = v }
 end.parse!
 
 file = ARGV[0]
-abort "Usage: epub_convert [options] <cbr_or_cbz_file>" unless file
+abort "Usage: comic_convert [options] <cbr_or_cbz_file>" unless file
 abort "Error: File not found: #{file}" unless File.exist?(file)
 
 # KCC deletes all KCC-* temp dirs on startup, so concurrent conversions break
@@ -36,17 +34,22 @@ abort "Error: Unsupported file extension #{ext}. Only .cbz and .cbr are supporte
 basename = File.basename(file, ext)
 dir = File.dirname(File.expand_path(file))
 
-# Parse Series and Number from basename (vXX pattern)
-# Ignore anything after vXX (e.g., " (2015) (Digital) (danke-Empire)")
-match = basename.match(/^(.*?)\s*v(\d+)(?:\s.*)?$/i)
-series = match ? match[1].strip : basename
-number = match ? match[2] : ""
-title = match ? "#{match[1].strip} v#{match[2]}" : basename
+# Title = everything up to the (YYYY) publication year.
+# Trailing metadata tags like " (Digital) (Shan-Empire)" are dropped.
+# e.g. "Batwoman 007 (2026) (digital) (Pyrate-DCP)" -> "Batwoman 007"
+# e.g. "Teenage Mutant Ninja Turtles (2024) 022 (2026) (digital) (...)"
+#      -> "Teenage Mutant Ninja Turtles (2024) 022"
+match = basename.match(/^(.*?)\s+\(\d{4}\)(?:\s+\([^)]+\))*$/)
+title = match ? match[1].strip : basename
+
+# Series/Number: trailing digits of the title are the issue number
+num_match = title.match(/^(.*?)\s+(\d+)$/)
+series = num_match ? num_match[1].strip : title
+number = num_match ? num_match[2] : ""
 
 # Escape values for XML
 series_escaped = CGI.escapeHTML(series)
 number_escaped = CGI.escapeHTML(number)
-writer_escaped = CGI.escapeHTML(options[:author] || "")
 title_escaped = CGI.escapeHTML(title)
 
 comic_info_xml = <<~XML
@@ -54,24 +57,22 @@ comic_info_xml = <<~XML
   <ComicInfo>
     <Series>%s</Series>
     <Number>%s</Number>
-    <Writer>%s</Writer>
     <Title>%s</Title>
   </ComicInfo>
 XML
 
-xml_content = format(comic_info_xml, series_escaped, number_escaped, writer_escaped, title_escaped)
+xml_content = format(comic_info_xml, series_escaped, number_escaped, title_escaped)
 xml_file = File.join(Dir.pwd, "ComicInfo.xml")
 File.write(xml_file, xml_content)
 
 # Build kcc-c2e arguments
 # kcc-c2e -o expects a directory, not a file path
 FileUtils.mkdir_p(dir)
-kcc_opts = ["-f", "EPUB"]
-kcc_opts += ["-p", "KoAO"] unless options[:apple]
-kcc_opts += [
+kcc_opts = [
+  "-f", "EPUB",
   "-r", "2",
   "-u",
-  "-c", options[:apple] ? "0" : "2",
+  "-c", "0",
   "--forcecolor",
   "-t", title,
   "-o", dir

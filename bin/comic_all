@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+
+EXTENSIONS = /.*\.(?:cbz|cbr)/i
+
+# Prefer comic_convert sitting next to this script; fall back to PATH
+sibling = File.join(File.dirname(File.expand_path(__FILE__)), "comic_convert")
+converter = File.exist?(sibling) ? sibling : "comic_convert"
+
+extra_args = ARGV.map { |a| Shellwords.escape(a) }.join(" ")
+
+files = Dir.entries('.').sort.select { |entry| EXTENSIONS.match(entry) }
+
+files.each do |file|
+  puts "Starting: #{file}"
+  system "#{Shellwords.escape(converter)} #{extra_args} #{Shellwords.escape(file)}"
+  puts "Finished: #{file}"
+end
+
+puts "All conversions complete."

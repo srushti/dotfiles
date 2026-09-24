@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+
+EXTENSIONS = /.*\.(?:cbz|cbr)/i
+
+extra_args = ARGV.map { |a| Shellwords.escape(a) }.join(" ")
+
+files = Dir.entries('.').sort.select { |entry| EXTENSIONS.match(entry) }
+
+files.each do |file|
+  puts "Starting: #{file}"
+  system "epub_convert #{extra_args} #{Shellwords.escape(file)}"
+  puts "Finished: #{file}"
+end
+
+puts "All conversions complete."

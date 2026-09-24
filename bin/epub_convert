@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'shellwords'
+require 'tmpdir'
+require 'fileutils'
+require 'cgi'
+
+options = { manga: false, author: nil }
+OptionParser.new do |opts|
+  opts.banner = "Usage: epub_convert [options] <cbr_or_cbz_file>"
+  opts.on("-m", "--manga", "Enable manga mode") { options[:manga] = true }
+  opts.on("-a", "--author AUTHOR", "Set author/writer") { |v| options[:author] = v }
+end.parse!
+
+file = ARGV[0]
+abort "Usage: epub_convert [options] <cbr_or_cbz_file>" unless file
+abort "Error: File not found: #{file}" unless File.exist?(file)
+
+ext = File.extname(file).downcase
+abort "Error: Unsupported file extension #{ext}. Only .cbz and .cbr are supported." unless %w[.cbz .cbr].include?(ext)
+
+basename = File.basename(file, ext)
+dir = File.dirname(File.expand_path(file))
+
+# Parse Series and Number from basename (vXX pattern)
+# Ignore anything after vXX (e.g., " (2015) (Digital) (danke-Empire)")
+match = basename.match(/^(.*?)\s*v(\d+)(?:\s.*)?$/i)
+series = match ? match[1].strip : basename
+number = match ? match[2] : ""
+title = match ? "#{match[1].strip} v#{match[2]}" : basename
+
+# Escape values for XML
+series_escaped = CGI.escapeHTML(series)
+number_escaped = CGI.escapeHTML(number)
+writer_escaped = CGI.escapeHTML(options[:author] || "")
+title_escaped = CGI.escapeHTML(title)
+
+comic_info_xml = <<~XML
+  <?xml version="1.0" encoding="utf-8"?>
+  <ComicInfo>
+    <Series>%s</Series>
+    <Number>%s</Number>
+    <Writer>%s</Writer>
+    <Title>%s</Title>
+  </ComicInfo>
+XML
+
+xml_content = format(comic_info_xml, series_escaped, number_escaped, writer_escaped, title_escaped)
+xml_file = File.join(Dir.pwd, "ComicInfo.xml")
+File.write(xml_file, xml_content)
+
+# Build kcc-c2e arguments
+# kcc-c2e -o expects a directory, not a file path
+FileUtils.mkdir_p(dir)
+kcc_opts = [
+  "-f", "EPUB",
+  "-p", "KoAO",
+  "-r", "2",
+  "-u",
+  "-c", "2",
+  "--forcecolor",
+  "-t", title,
+  "-o", dir
+]
+kcc_opts << "-m" if options[:manga]
+
+def convert(source, file, basename, dir, kcc_opts)
+  puts "Converting #{file} to EPUB..."
+  success = system("kcc-c2e", *kcc_opts, source)
+  return unless success
+
+  target = File.join(dir, "#{basename}.epub")
+  # kcc-c2e may append a device suffix (e.g., .kepub.epub); find and rename
+  candidates = Dir.glob(File.join(dir, "#{basename}*.epub"))
+  generated = candidates.reject { |f| File.basename(f) == "#{basename}.epub" }.first || target
+  if generated != target && File.exist?(generated)
+    puts "Renaming #{generated} -> #{target}"
+    FileUtils.mv(generated, target)
+  elsif File.exist?(target)
+    puts "Output: #{target}"
+  end
+end
+
+begin
+  if ext == ".cbz"
+    puts "Adding ComicInfo.xml to #{file} with 7z"
+    system("7z", "a", "-tzip", file, xml_file)
+    convert(file, file, title, dir, kcc_opts)
+  else # .cbr
+    puts "Extracting #{file} and adding ComicInfo.xml..."
+    Dir.mktmpdir do |tmpdir|
+      extract_dir = File.join(tmpdir, "extract")
+      FileUtils.mkdir_p(extract_dir)
+      system("7z", "x", file, "-o#{extract_dir}")
+      FileUtils.cp(xml_file, extract_dir)
+      temp_cbz = File.join(tmpdir, "#{basename}.cbz")
+      files_to_add = Dir.entries(extract_dir) - %w[. ..]
+      Dir.chdir(extract_dir) do
+        system("7z", "a", "-tzip", temp_cbz, *files_to_add)
+      end
+      convert(temp_cbz, file, title, dir, kcc_opts)
+    end
+  end
+ensure
+  File.delete(xml_file) if File.exist?(xml_file)
+end

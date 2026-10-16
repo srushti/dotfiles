@@ -18,44 +18,6 @@ source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
 # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
 antidote load
 
-# # Path to your oh-my-zsh configuration.
-# ZSH=$HOME/.oh-my-zsh
-# if [ -s $HOME/.oh-my-zsh-custom ]; then
-#     ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
-# fi
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-# if [ -n $ZSH_CUSTOM ] && [ -f $ZSH_CUSTOM/`whoami`.zsh-theme ]; then
-#     ZSH_THEME="`whoami`"
-# fi
-
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in eza
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# plugins=(git gh git-prompt tmux colorize rbenv ruby gem rails brew macos iterm2 bundler npm tmuxinator)
-
 DISABLE_UPDATE_PROMPT=true # will auto update without prompt
 ZSH_COLORIZE_STYLE="colorful"
 
@@ -128,8 +90,6 @@ setopt auto_pushd
 
 # paths -------------------------------------------------------
 
-export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="$HOME/.rbenv/shims:$PATH"
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="./bin:$PATH"
@@ -253,3 +213,6 @@ export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 export FACELIFT_THEME=gruvbox-dark-hard
 export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
 export PI_SKIP_VERSION_CHECK=1
+
+# Added by Antigravity IDE
+export PATH="/Users/srushtiambekallu/.antigravity-ide/antigravity-ide/bin:$PATH"

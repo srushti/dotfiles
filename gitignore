@@ -32,3 +32,6 @@ README.hermit.md
 .goose
 quickfix-*
 .pi/
+five-whys/
+
+.grip/

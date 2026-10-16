@@ -11,6 +11,9 @@ require 'time'
 HOOKS = %w[post-commit].freeze
 HOOKS_DIR = '.git/hooks'
 GIT_SHOTS_DIR = "#{ENV['HOME']}/Library/CloudStorage/Dropbox/Photos/gitshots"
+MIN_INTERVAL = 3600
+# Shots are named by 15-minute slot, so a burst of commits shares one file
+SLOT_SECONDS = 900
 
 def ensure_git_repo
   return if File.writable?(HOOKS_DIR)
@@ -44,10 +47,10 @@ def pick_camera
 end
 
 def file_path
-  year = Time.now.strftime('%Y')
-  month = Time.now.strftime('%m')
-  FileUtils.mkdir_p("#{GIT_SHOTS_DIR}/#{year}/#{month}")
-  "#{GIT_SHOTS_DIR}/#{year}/#{month}/#{Time.now.strftime('%Y%m%d%H%M%S')}.jpg"
+  slot = Time.at(Time.now.to_i / SLOT_SECONDS * SLOT_SECONDS)
+  dir = "#{GIT_SHOTS_DIR}/#{slot.strftime('%Y/%m')}"
+  FileUtils.mkdir_p(dir)
+  "#{dir}/#{slot.strftime('%Y%m%d%H%M')}.jpg"
 end
 
 def recent_shot?
@@ -68,28 +71,35 @@ def recent_shot?
   return false unless latest
 
   begin
-    # Filename format: YYYYMMDDHHMMSS.jpg
-    shot_time = Time.strptime(File.basename(latest, '.jpg'), '%Y%m%d%H%M%S')
-    (Time.now - shot_time) < 3600
+    # Filename format: YYYYMMDDHHMM.jpg (older shots also have seconds)
+    shot_time = Time.strptime(File.basename(latest)[0, 12], '%Y%m%d%H%M')
+    (Time.now - shot_time) < MIN_INTERVAL
   rescue ArgumentError
     false
   end
 end
 
+def rebasing?
+  %w[rebase-merge rebase-apply].any? do |dir|
+    File.directory?(`git rev-parse --git-path #{dir}`.strip)
+  end
+end
+
 def take_shot(run_in_background: false)
-  return if File.directory?(File.expand_path('../rebase-merge', __dir__))
+  return if rebasing?
 
   return if recent_shot?
 
   # puts "Taking capture into #{file_path}!"
   # Using ffmpeg for capture (more reliable on modern macOS)
+  # -y: overwrite, so commits in the same slot reuse one file
   # -f avfoundation: use macOS AVFoundation
   # -video_size 1280x720: reasonable resolution
   # -framerate 30: required framerate for the camera
   # -i "0": use first camera (MacBook Pro Camera)
   # -frames:v 1: capture only one frame
   camera_id = pick_camera
-  command = "ffmpeg -f avfoundation -video_size 1280x720 -framerate 30 -i \"#{camera_id}\" -frames:v 1 -update 1 \"#{file_path}\" 2>/dev/null"
+  command = "ffmpeg -y -f avfoundation -video_size 1280x720 -framerate 30 -i \"#{camera_id}\" -frames:v 1 -update 1 \"#{file_path}\" 2>/dev/null"
 
   if run_in_background
     # Run in background and detach

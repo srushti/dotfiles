@@ -216,3 +216,6 @@ export PI_SKIP_VERSION_CHECK=1
 
 # Added by Antigravity IDE
 export PATH="/Users/srushtiambekallu/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# Added by Kiri: its docker and kiri commands (kiri setup --uninstall removes this)
+case ":$PATH:" in *":$HOME/.kiri/bin:"*) ;; *) export PATH="$PATH:$HOME/.kiri/bin" ;; esac
